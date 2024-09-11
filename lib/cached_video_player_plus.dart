@@ -516,15 +516,15 @@ class CachedVideoPlayerPlusController
       }
 
       if (cachedFile == null) {
-        _cacheManager
-            .downloadFile(dataSource, authHeaders: httpHeaders)
-            .then((_) {
-          _storage.write(
-            _getCacheKey(dataSource),
-            DateTime.timestamp().millisecondsSinceEpoch,
-          );
-          debugPrint('Cached video [$dataSource] successfully.');
-        });
+        await _cacheManager.downloadFile(dataSource, authHeaders: httpHeaders);
+        _storage.write(
+          _getCacheKey(dataSource),
+          DateTime.timestamp().millisecondsSinceEpoch,
+        );
+        cachedFile = await _cacheManager.getFileFromCache(dataSource);
+        isCacheAvailable = true;
+
+       debugPrint('Cached video [$dataSource] successfully.');
       } else {
         isCacheAvailable = true;
       }
